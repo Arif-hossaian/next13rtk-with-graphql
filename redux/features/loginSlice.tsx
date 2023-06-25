@@ -1,55 +1,32 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 
-type User = {
-  username: string;
-  password: string;
-};
+import { createSlice } from "@reduxjs/toolkit"
 
-type LoginState = {
-  user: User | null;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-};
-
-const initialState: LoginState = {
-  user: null,
-  status: 'idle',
-  error: null
-};
-
-export const loginAsync = createAsyncThunk(
-  "login/loginUser",
-  async (user: User) => {
-    const response = await new Promise<User>((resolve) =>
-      setTimeout(() => resolve(user), 500)
-    );
-    return response;
+const initialState = {
+  value: {
+    isAuth: false,
+    phnNum: '',
+    password:''
   }
-);
+} as any
 
-export const loginSlice = createSlice({
-  name: "login",
+export const auth = createSlice({
+  name:'auth',
   initialState,
   reducers: {
-    logout: (state) => {
-      state.user = null;
+    logOut: () => {
+      return initialState
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(loginAsync.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(loginAsync.fulfilled, (state, action: PayloadAction<User>) => {
-        state.status = 'succeeded';
-        state.user = action.payload;
-      })
-      .addCase(loginAsync.rejected, (state) => {
-        state.status = 'failed';
-        state.error = 'Failed to login';
-      });
-  },
-});
+    login: (state, action:any) => {
+      return {
+        value: {
+          isAuth: true,
+          phnNum: action.payload,
+          passwrod: action.payload
+        }
+      }
+    }
+  }
+})
 
-export const { logout } = loginSlice.actions;
-export default loginSlice.reducer;
+export const {logOut, login} = auth.actions
+export default auth.reducer
