@@ -34,6 +34,8 @@ npm run dev
 yarn run dev
 ```
 
+For signin you can use any phn num and password
+
 ## Technologies Used
 
 - NextJS
