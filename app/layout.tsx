@@ -1,4 +1,5 @@
-import { Providers } from '@/components/Providers';
+
+import { ApolloProviders } from '@/components/ApolloProviders';
 import './globals.css';
 import { ReduxProvider } from '@/redux/Provider';
 
@@ -12,7 +13,7 @@ export default function RootLayout({
       <head />
       <body>
         <ReduxProvider>
-          <Providers>{children}</Providers>
+          <ApolloProviders>{children}</ApolloProviders>
         </ReduxProvider>
       </body>
     </html>
