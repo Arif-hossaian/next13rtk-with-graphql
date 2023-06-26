@@ -6,7 +6,7 @@ const Auth = ({ inputData, handleChange, handleClick, validate }: any) => {
     <div className="mx-auto max-w-screen-sm mt-10 md:mt-16 lg:mt-16">
       <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+          <label className="input-label">
             Phone number
           </label>
           <input
@@ -18,7 +18,7 @@ const Auth = ({ inputData, handleChange, handleClick, validate }: any) => {
           />
         </div>
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+          <label className="input-label">
             Password
           </label>
           <input
