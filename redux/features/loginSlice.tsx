@@ -1,32 +1,25 @@
 
-import { createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-  value: {
     isAuth: false,
     phnNum: '',
     password:''
-  }
 } as any
 
 export const auth = createSlice({
   name:'auth',
   initialState,
   reducers: {
-    logOut: () => {
-      return initialState
-    },
-    login: (state, action:any) => {
+    login: (state, action: PayloadAction<{phnNum: string, password: string}>) => {
       return {
-        value: {
           isAuth: true,
-          phnNum: action.payload,
-          passwrod: action.payload
-        }
+          phnNum: action.payload.phnNum,
+          password: action.payload.password
       }
     }
   }
 })
 
-export const {logOut, login} = auth.actions
+export const {login} = auth.actions
 export default auth.reducer

@@ -2,12 +2,9 @@ import { gql } from "@apollo/client";
 
 export const getPokemonsQuery = gql`
   query Pokemon {
-    pokemons(first:12){
-      id
+    pokemons(first:15){
       name
-      image
       classification
-      fleeRate
       types
     }
   }

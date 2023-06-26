@@ -2,10 +2,12 @@
 import Card from '@/components/Card';
 import { getPokemonsQuery } from '@/graphql/getPokemonsQuery';
 import { useQuery } from '@apollo/client';
-import { Key, ReactNode, useState } from 'react';
-import {login, logOut} from '../redux/features/loginSlice'
+import { Key, ReactNode, useEffect, useState } from 'react';
+import { login } from '../redux/features/loginSlice';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, useAppSelector } from '@/redux/store';
+import Auth from '@/components/Auth';
+import Loading from '@/components/Loading';
 
 export type Pokemon = {
   types: any[];
@@ -23,71 +25,77 @@ export type IterableNode = ReactNode | null | undefined;
 
 export default function Home() {
   const [inputData, setInputData] = useState({
-    phnNum:'',
-    password:''
-  })
-  const [displayAuth, setDisplayAuth] = useState(false);
+    phnNum: '',
+    password: '',
+  });
+  const [displayAuth, setDisplayAuth] = useState(true);
   const [displayData, setDisplayData] = useState(false);
   const { data, loading, error } = useQuery(getPokemonsQuery);
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
+  const auth = useAppSelector((state) => state.auth);
 
-  if (loading) return <p className="text-black">Loading ....</p>;
+  const handleChange = (e: { target: { value: any; name: any } }) => {
+    const value = e.target.value;
+    setInputData({
+      ...inputData,
+      [e.target.name]: value,
+    });
+  };
+
+  const validate = () => {
+    return inputData.phnNum && inputData.password;
+  };
+
+  const handleClick = (e: any) => {
+    e.preventDefault();
+    if (validate()) {
+      dispatch(login(inputData));
+    }
+  };
+
+  useEffect(() => {
+    if (auth.isAuth) {
+      setDisplayAuth(false);
+      setDisplayData(true);
+    }
+  }, [auth.isAuth]);
+
+  if (loading) return <Loading />;
   if (error)
-    return <p className="text-black">Oops! Something went wrong ....</p>;
+    return (
+      <p className="text-red-500 text-center text-2xl font-bold mt-16">
+        Oops! Something went wrong ....
+      </p>
+    );
 
   return (
-    <main className=" mx-auto max-w-screen-xl py-4 px-5">
-      <div className="w-full max-w-xs">
-        <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Phone number
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="username"
-              type="text"
-              placeholder="Username"
-            />
+    <main className="mx-auto max-w-screen-xl py-4 px-5">
+      {displayAuth == true && displayData == false && (
+        <Auth
+          inputData={inputData}
+          handleChange={handleChange}
+          handleClick={handleClick}
+          validate={validate}
+        />
+      )}
+      {displayData == true && displayAuth == false && (
+        <>
+          <h1 className="text-2xl text-center mt-10 mb-10 font-bold">
+            Displaying List of pokemons
+          </h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {data.pokemons.map((pokemon: Pokemon, index: Key) => (
+              <div key={index}>
+                <Card
+                  title={pokemon.name}
+                  description={pokemon.classification}
+                  typesInfo={pokemon.types}
+                />
+              </div>
+            ))}
           </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Password
-            </label>
-            <input
-              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              type="password"
-              placeholder="******************"
-            />
-            <p className="text-red-500 text-xs italic">
-              Please choose a password.
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-            >
-              Sign In
-            </button>
-          </div>
-        </form>
-        <p className="text-center text-gray-500 text-xs">
-          &copy;2020 Acme Corp. All rights reserved.
-        </p>
-      </div>
-      <div className="grid grid-cols-3 gap-10">
-        {data.pokemons.map((pokemon: Pokemon, index: Key) => (
-          <div key={index}>
-            <Card
-              title={pokemon.name}
-              description={pokemon.classification}
-              typesInfo={pokemon.types}
-            />
-          </div>
-        ))}
-      </div>
+        </>
+      )}
     </main>
   );
 }
