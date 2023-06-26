@@ -7,7 +7,6 @@ Next.js Login Page with Redux, Tailwind CSS, and GraphQL Integration
 - Login view.
 - Form validation.
 - Dispatched an action to store the entered phone number and password in the Redux store when the form is submitted.
-- Admin Dashboard / Overview / Summary
 - Fetching data from graphql API.
 - Ensured error handling.
 
